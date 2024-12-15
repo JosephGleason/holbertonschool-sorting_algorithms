@@ -34,7 +34,7 @@ void insertion_sort_list(listint_t **head)
 				*head = cur;
 
 			prev->prev = cur;
-			print_list(*head);  // Print the list after each swap
+			print_list(*head);
 			prev = cur->prev;
 		}
 
