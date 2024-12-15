@@ -1,41 +1,78 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "sort.h"
 
-void quick_sort(int *array, size_t size)
+/**
+ * swap - Swaps two elements in an array.
+ * @a: The first element.
+ * @b: The second element.
+ */
+void swap(int *a, int *b)
 {
-	int low = 0;
-	int high = size - 1;
-	int temp;
+	int temp = *a;
+	*a = *b;
+	*b = temp;
+}
 
-	/* Base case: if the partition size is more than 1 */
-	if (low < high)
+/**
+ * partition - Partitions the array using the Lomuto partition scheme.
+ * @array: The array to be partitioned.
+ * @low: The starting index of the partition.
+ * @high: The ending index of the partition.
+ * @size: The size of the array.
+ * Return: The index of the pivot.
+ */
+int partition(int *array, int low, int high, size_t size)
+{
+	int pivot = array[high];
+	int i = low - 1, j;
+
+	for (j = low; j < high; j++)
 	{
-		/* Set pivot to the last element of the partition */
-		int pivot = array[high];
-		int i = low - 1;
-		int j;
-
-		/* Loop through the array and move smaller elements to the left of pivot */
-		for (j = low; j < high; j++)
+		if (array[j] < pivot)
 		{
-			if (array[j] < pivot)
+			i++;
+			if (i != j)
 			{
-				i++;  /* Move the smaller element pointer */
-				/* Swap array[i] and array[j] */
-				temp = array[i];
-				array[i] = array[j];
-				array[j] = temp;
+				swap(&array[i], &array[j]);
+				print_array(array, size);
 			}
 		}
-
-		/* Place the pivot in its correct position */
-		temp = array[i + 1];
-		array[i + 1] = array[high];
-		array[high] = temp;
-
-		/* Recursively sort the left and right partitions */
-		quick_sort(array, i);  /* Sort the left partition */
-		quick_sort(array + i + 2, high - i - 1);  /* Sort the right partition */
 	}
+	if (array[high] < array[i + 1])
+	{
+		swap(&array[i + 1], &array[high]);
+		print_array(array, size);
+	}
+	return (i + 1);
+}
+
+/**
+ * quick_sort_rec - Recursively applies the Quick Sort algorithm.
+ * @array: The array to be sorted.
+ * @low: The starting index of the partition.
+ * @high: The ending index of the partition.
+ * @size: The size of the array.
+ */
+void quick_sort_rec(int *array, int low, int high, size_t size)
+{
+	if (low < high)
+	{
+		int pi = partition(array, low, high, size);
+
+		quick_sort_rec(array, low, pi - 1, size);
+		quick_sort_rec(array, pi + 1, high, size);
+	}
+}
+
+/**
+ * quick_sort - Sorts array of ints in ascending order using Quick Sort.
+ * @array: The array to be sorted.
+ * @size: The size of the array.
+ */
+void quick_sort(int *array, size_t size)
+{
+	if (array == NULL || size < 2)
+		return;
+
+	quick_sort_rec(array, 0, size - 1, size);
 }
 
